@@ -1,0 +1,21 @@
+{
+	"luci-app-table-firewall": {
+		"description": "Grant access to the table-driven firewall UI",
+		"read": {
+			"file": {
+				"/etc/services": [ "read" ]
+			},
+			"ubus": {
+				"file": [ "read" ],
+				"luci": [ "getConntrackHelpers" ],
+				"luci-rpc": [ "getHostHints", "getNetworkDevices" ],
+				"network.interface": [ "dump" ],
+				"network.device": [ "status" ]
+			},
+			"uci": [ "firewall", "dhcp", "network" ]
+		},
+		"write": {
+			"uci": [ "firewall" ]
+		}
+	}
+}

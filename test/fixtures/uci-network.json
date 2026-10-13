@@ -1,0 +1,120 @@
+{
+	"values": {
+		"loopback": {
+			".anonymous": false,
+			".type": "interface",
+			".name": "loopback",
+			".index": 0,
+			"device": "lo",
+			"proto": "static",
+			"ipaddr": "127.0.0.1",
+			"netmask": "255.0.0.0"
+		},
+		"globals": {
+			".anonymous": false,
+			".type": "globals",
+			".name": "globals",
+			".index": 1,
+			"ula_prefix": "fd3d:1d03:3faf::/48"
+		},
+		"cfg030f15": {
+			".anonymous": true,
+			".type": "device",
+			".name": "cfg030f15",
+			".index": 2,
+			"name": "br-lan",
+			"type": "bridge",
+			"ports": [
+				"eth0"
+			]
+		},
+		"lan": {
+			".anonymous": false,
+			".type": "interface",
+			".name": "lan",
+			".index": 3,
+			"device": "br-lan",
+			"proto": "static",
+			"ipaddr": "192.168.199.222",
+			"netmask": "255.255.255.0",
+			"gateway": "192.168.199.1",
+			"dns": "8.8.8.8"
+		},
+		"wan": {
+			".anonymous": false,
+			".type": "interface",
+			".name": "wan",
+			".index": 4,
+			"device": "eth1",
+			"proto": "dhcp",
+			"defaultroute": "0",
+			"peerdns": "0"
+		},
+		"wan6": {
+			".anonymous": false,
+			".type": "interface",
+			".name": "wan6",
+			".index": 5,
+			"device": "eth1",
+			"proto": "dhcpv6",
+			"defaultroute": "0"
+		},
+		"cfg070f15": {
+			".anonymous": true,
+			".type": "device",
+			".name": "cfg070f15",
+			".index": 6,
+			"name": "br-dmz",
+			"type": "bridge",
+			"bridge_empty": "1"
+		},
+		"cfg080f15": {
+			".anonymous": true,
+			".type": "device",
+			".name": "cfg080f15",
+			".index": 7,
+			"name": "br-mgmtdmz",
+			"type": "bridge",
+			"bridge_empty": "1"
+		},
+		"cfg090f15": {
+			".anonymous": true,
+			".type": "device",
+			".name": "cfg090f15",
+			".index": 8,
+			"name": "br-prod",
+			"type": "bridge",
+			"bridge_empty": "1"
+		},
+		"dmz": {
+			".anonymous": false,
+			".type": "interface",
+			".name": "dmz",
+			".index": 9,
+			"device": "br-dmz",
+			"proto": "static",
+			"ipaddr": "10.10.10.1",
+			"netmask": "255.255.255.0"
+		},
+		"mgmt_dmz": {
+			".anonymous": false,
+			".type": "interface",
+			".name": "mgmt_dmz",
+			".index": 10,
+			"device": "br-mgmtdmz",
+			"proto": "static",
+			"ipaddr": "10.10.20.1",
+			"netmask": "255.255.255.0"
+		},
+		"production": {
+			".anonymous": false,
+			".type": "interface",
+			".name": "production",
+			".index": 11,
+			"device": "br-prod",
+			"proto": "static",
+			"ipaddr": "10.10.30.1",
+			"netmask": "255.255.255.0"
+		}
+	}
+}

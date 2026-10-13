@@ -1,0 +1,23 @@
+# OpenWrt images (large; download from downloads.openwrt.org)
+img/*.img.gz
+img/*.img
+
+# LuCI source reference; reproduce with: git clone https://github.com/openwrt/luci ref/luci
+ref/
+
+# OpenWrt SDKs and build trees (downloaded by scripts/build-packages.sh)
+sdk/
+
+# built packages
+dist/
+
+# editor / OS noise
+*.swp
+.DS_Store
+
+# key material / secrets
+*.key
+*.pem
+*.p12
+.env
+secrets/

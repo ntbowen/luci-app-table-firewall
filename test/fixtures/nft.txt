@@ -1,0 +1,358 @@
+table inet fw4 { # handle 1
+	chain input { # handle 1
+		type filter hook input priority filter; policy drop;
+		iif "lo" accept comment "!fw4: Accept traffic from loopback" # handle 3552
+		ct state vmap { established : accept, related : accept } comment "!fw4: Handle inbound flows" # handle 3554
+		tcp flags & (fin | syn | rst | ack) == syn jump syn_flood comment "!fw4: Rate limit TCP syn packets" # handle 3555
+		iifname "br-lan" jump input_lan comment "!fw4: Handle lan IPv4/IPv6 input traffic" # handle 3556
+		iifname "eth1" jump input_wan comment "!fw4: Handle wan IPv4/IPv6 input traffic" # handle 3557
+		iifname "br-dmz" jump input_DMZ comment "!fw4: Handle DMZ IPv4/IPv6 input traffic" # handle 3558
+		iifname "br-mgmtdmz" jump input_MGMT_DMZ comment "!fw4: Handle MGMT_DMZ IPv4/IPv6 input traffic" # handle 3559
+		iifname "br-prod" jump input_production comment "!fw4: Handle production IPv4/IPv6 input traffic" # handle 3560
+		jump handle_reject # handle 3561
+	}
+
+	chain forward { # handle 2
+		type filter hook forward priority filter; policy drop;
+		ct state vmap { established : accept, related : accept } comment "!fw4: Handle forwarded flows" # handle 3563
+		iifname "br-lan" jump forward_lan comment "!fw4: Handle lan IPv4/IPv6 forward traffic" # handle 3564
+		iifname "eth1" jump forward_wan comment "!fw4: Handle wan IPv4/IPv6 forward traffic" # handle 3565
+		iifname "br-dmz" jump forward_DMZ comment "!fw4: Handle DMZ IPv4/IPv6 forward traffic" # handle 3566
+		iifname "br-mgmtdmz" jump forward_MGMT_DMZ comment "!fw4: Handle MGMT_DMZ IPv4/IPv6 forward traffic" # handle 3567
+		iifname "br-prod" jump forward_production comment "!fw4: Handle production IPv4/IPv6 forward traffic" # handle 3568
+		jump handle_reject # handle 3569
+	}
+
+	chain output { # handle 3
+		type filter hook output priority filter; policy accept;
+		oif "lo" accept comment "!fw4: Accept traffic towards loopback" # handle 3570
+		ct state vmap { established : accept, related : accept } comment "!fw4: Handle outbound flows" # handle 3572
+		oifname "br-lan" jump output_lan comment "!fw4: Handle lan IPv4/IPv6 output traffic" # handle 3573
+		oifname "eth1" jump output_wan comment "!fw4: Handle wan IPv4/IPv6 output traffic" # handle 3574
+		oifname "br-dmz" jump output_DMZ comment "!fw4: Handle DMZ IPv4/IPv6 output traffic" # handle 3575
+		oifname "br-mgmtdmz" jump output_MGMT_DMZ comment "!fw4: Handle MGMT_DMZ IPv4/IPv6 output traffic" # handle 3576
+		oifname "br-prod" jump output_production comment "!fw4: Handle production IPv4/IPv6 output traffic" # handle 3577
+	}
+
+	chain prerouting { # handle 4
+		type filter hook prerouting priority filter; policy accept;
+		iifname "br-lan" jump helper_lan comment "!fw4: Handle lan IPv4/IPv6 helper assignment" # handle 3578
+		iifname "br-dmz" jump helper_DMZ comment "!fw4: Handle DMZ IPv4/IPv6 helper assignment" # handle 3579
+		iifname "br-mgmtdmz" jump helper_MGMT_DMZ comment "!fw4: Handle MGMT_DMZ IPv4/IPv6 helper assignment" # handle 3580
+		iifname "br-prod" jump helper_production comment "!fw4: Handle production IPv4/IPv6 helper assignment" # handle 3581
+	}
+
+	chain handle_reject { # handle 5
+		meta l4proto tcp reject with tcp reset comment "!fw4: Reject TCP traffic" # handle 3582
+		reject comment "!fw4: Reject any other traffic" # handle 3583
+	}
+
+	chain syn_flood { # handle 6
+		limit rate 25/second burst 50 packets return comment "!fw4: Accept SYN packets below rate-limit" # handle 3584
+		drop comment "!fw4: Drop excess packets" # handle 3585
+	}
+
+	chain input_lan { # handle 7
+		tcp dport 443 counter packets 0 bytes 0 accept comment "!fw4: Mgmt-LuCI-HTTPS-from-LAN" # handle 3586
+		tcp dport 22 counter packets 16 bytes 960 accept comment "!fw4: Mgmt-SSH-from-LAN" # handle 3587
+		tcp dport 53 counter packets 0 bytes 0 accept comment "!fw4: Allow-DNS-from-LAN" # handle 3588
+		udp dport 53 counter packets 0 bytes 0 accept comment "!fw4: Allow-DNS-from-LAN" # handle 3589
+		tcp dport 80 counter packets 2 bytes 104 accept comment "!fw4: Mgmt-LuCI-HTTP-from-LAN" # handle 3590
+		udp dport 123 counter packets 0 bytes 0 accept comment "!fw4: Allow-NTP-from-LAN" # handle 3591
+		meta l4proto { icmp, ipv6-icmp } counter packets 1 bytes 56 accept comment "!fw4: Allow-Ping-from-LAN" # handle 3593
+		jump accept_from_lan # handle 3594
+	}
+
+	chain output_lan { # handle 8
+		jump accept_to_lan # handle 3595
+	}
+
+	chain forward_lan { # handle 9
+		tcp dport 25 counter packets 0 bytes 0 jump reject_to_wan comment "!fw4: Block-LAN-SMTP-Direct" # handle 3596
+		tcp dport 6881-6889 counter packets 0 bytes 0 jump reject_to_wan comment "!fw4: Block-LAN-Torrent" # handle 3597
+		tcp dport { 80, 443 } counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-Web" # handle 3599
+		tcp dport 587 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-Submission" # handle 3600
+		tcp dport 993 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-IMAPS" # handle 3601
+		tcp dport 53 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-DNS-Out" # handle 3602
+		udp dport 53 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-DNS-Out" # handle 3603
+		tcp dport 22 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-SSH-Out" # handle 3604
+		udp dport 123 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-NTP-Out" # handle 3605
+		udp dport 1194 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-LAN-VPN-Out" # handle 3606
+		tcp dport { 80, 443 } counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Allow-LAN-DMZ-Web" # handle 3608
+		tcp dport 22 counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Allow-LAN-DMZ-SSH" # handle 3609
+		tcp dport { 25, 143, 993 } counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Allow-LAN-DMZ-Mail" # handle 3611
+		tcp dport 22 counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-LAN-Prod-SSH" # handle 3612
+		tcp dport 3389 counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-LAN-Prod-RDP" # handle 3613
+		tcp dport { 80, 443 } counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-LAN-Prod-Web" # handle 3615
+		tcp dport 445 counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-LAN-Prod-SMB" # handle 3616
+		tcp dport { 22, 443 } counter packets 0 bytes 0 jump accept_to_MGMT_DMZ comment "!fw4: Allow-LAN-MGMTDMZ-Mgmt" # handle 3618
+		udp sport 123 udp dport 123 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Legacy-NTP-Fixed-SrcPort" # handle 3619
+		jump accept_to_wan comment "!fw4: Accept lan to wan forwarding" # handle 3620
+		jump accept_to_DMZ comment "!fw4: Accept lan to DMZ forwarding" # handle 3621
+		jump accept_to_MGMT_DMZ comment "!fw4: Accept lan to MGMT_DMZ forwarding" # handle 3622
+		jump drop_to_lan # handle 3623
+	}
+
+	chain helper_lan { # handle 10
+	}
+
+	chain accept_from_lan { # handle 11
+		iifname "br-lan" counter packets 1 bytes 229 accept comment "!fw4: accept lan IPv4/IPv6 traffic" # handle 3624
+	}
+
+	chain accept_to_lan { # handle 12
+		oifname "br-lan" counter packets 0 bytes 0 accept comment "!fw4: accept lan IPv4/IPv6 traffic" # handle 3625
+	}
+
+	chain input_wan { # handle 13
+		meta nfproto ipv4 udp dport 68 counter packets 0 bytes 0 accept comment "!fw4: Allow-DHCP-Renew" # handle 3628
+		icmp type echo-request counter packets 0 bytes 0 accept comment "!fw4: Allow-Ping" # handle 3629
+		meta nfproto ipv4 meta l4proto igmp counter packets 0 bytes 0 accept comment "!fw4: Allow-IGMP" # handle 3630
+		meta nfproto ipv6 udp dport 546 counter packets 0 bytes 0 accept comment "!fw4: Allow-DHCPv6" # handle 3631
+		ip6 saddr fe80::/10 icmpv6 type . icmpv6 code { mld-listener-query . 0, mld-listener-report . 0, mld-listener-done . 0, mld2-listener-report . 0 } counter packets 0 bytes 0 accept comment "!fw4: Allow-MLD" # handle 3633
+		icmpv6 type { destination-unreachable, time-exceeded, echo-request, echo-reply, nd-router-solicit, nd-router-advert } limit rate 1000/second burst 5 packets counter packets 0 bytes 0 accept comment "!fw4: Allow-ICMPv6-Input" # handle 3635
+		icmpv6 type . icmpv6 code { packet-too-big . 0, parameter-problem . 0, nd-neighbor-solicit . 0, nd-neighbor-advert . 0, parameter-problem . 1 } limit rate 1000/second burst 5 packets counter packets 0 bytes 0 accept comment "!fw4: Allow-ICMPv6-Input" # handle 3637
+		tcp dport 22 counter packets 0 bytes 0 drop comment "!fw4: Drop-SSH-from-WAN" # handle 3638
+		tcp dport 23 counter packets 0 bytes 0 drop comment "!fw4: Drop-Telnet-from-WAN" # handle 3639
+		ct status dnat accept comment "!fw4: Accept port redirections" # handle 3640
+		jump reject_from_wan # handle 3641
+	}
+
+	chain output_wan { # handle 14
+		jump accept_to_wan # handle 3642
+	}
+
+	chain forward_wan { # handle 15
+		meta l4proto esp counter packets 0 bytes 0 jump accept_to_lan comment "!fw4: Allow-IPSec-ESP" # handle 3643
+		icmpv6 type { destination-unreachable, time-exceeded, echo-request, echo-reply } limit rate 1000/second burst 5 packets counter packets 0 bytes 0 accept comment "!fw4: Allow-ICMPv6-Forward" # handle 3645
+		icmpv6 type . icmpv6 code { packet-too-big . 0, parameter-problem . 0, parameter-problem . 1 } limit rate 1000/second burst 5 packets counter packets 0 bytes 0 accept comment "!fw4: Allow-ICMPv6-Forward" # handle 3647
+		udp dport 500 counter packets 0 bytes 0 jump accept_to_lan comment "!fw4: Allow-ISAKMP" # handle 3648
+		ip daddr 10.10.10.10 tcp dport 80 counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Pub-Web-HTTP" # handle 3649
+		ip daddr 10.10.10.10 tcp dport 443 counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Pub-Web-HTTPS" # handle 3650
+		ip daddr 10.10.10.20 tcp dport 25 counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Pub-Mail-SMTP" # handle 3651
+		ip daddr 10.10.10.20 tcp dport { 465, 587 } counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Pub-Mail-Submission" # handle 3653
+		ip daddr 10.10.10.20 tcp dport 993 counter packets 0 bytes 0 jump accept_to_DMZ comment "!fw4: Pub-Mail-IMAPS" # handle 3654
+		meta l4proto tcp counter packets 0 bytes 0 jump drop_to_DMZ comment "!fw4: Drop-WAN-to-DMZ-Any" # handle 3655
+		meta l4proto udp counter packets 0 bytes 0 jump drop_to_DMZ comment "!fw4: Drop-WAN-to-DMZ-Any" # handle 3656
+		ip daddr 192.168.199.3 tcp dport 22 counter packets 0 bytes 0 jump reject_to_lan comment "!fw4: OnlyIPv4" # handle 3657
+		ip daddr 192.168.199.3 udp dport 22 counter packets 0 bytes 0 jump reject_to_lan comment "!fw4: OnlyIPv4" # handle 3658
+		ct status dnat accept comment "!fw4: Accept port forwards" # handle 3659
+		jump reject_to_wan # handle 3660
+	}
+
+	chain accept_to_wan { # handle 16
+		meta nfproto ipv4 oifname "eth1" ct state invalid counter packets 0 bytes 0 drop comment "!fw4: Prevent NAT leakage" # handle 3661
+		oifname "eth1" counter packets 2 bytes 304 accept comment "!fw4: accept wan IPv4/IPv6 traffic" # handle 3662
+	}
+
+	chain reject_from_wan { # handle 17
+		iifname "eth1" counter packets 88 bytes 29568 jump handle_reject comment "!fw4: reject wan IPv4/IPv6 traffic" # handle 3663
+	}
+
+	chain reject_to_wan { # handle 18
+		oifname "eth1" counter packets 0 bytes 0 jump handle_reject comment "!fw4: reject wan IPv4/IPv6 traffic" # handle 3664
+	}
+
+	chain dstnat { # handle 19
+		type nat hook prerouting priority dstnat; policy accept;
+		iifname "eth1" jump dstnat_wan comment "!fw4: Handle wan IPv4/IPv6 dstnat traffic" # handle 3722
+		iifname "br-dmz" jump dstnat_DMZ comment "!fw4: Handle DMZ IPv4/IPv6 dstnat traffic" # handle 3723
+		iifname "br-prod" jump dstnat_production comment "!fw4: Handle production IPv4/IPv6 dstnat traffic" # handle 3724
+	}
+
+	chain srcnat { # handle 20
+		type nat hook postrouting priority srcnat; policy accept;
+		oifname "eth1" jump srcnat_wan comment "!fw4: Handle wan IPv4/IPv6 srcnat traffic" # handle 3725
+		oifname "br-dmz" jump srcnat_DMZ comment "!fw4: Handle DMZ IPv4/IPv6 srcnat traffic" # handle 3726
+		oifname "br-prod" jump srcnat_production comment "!fw4: Handle production IPv4/IPv6 srcnat traffic" # handle 3727
+	}
+
+	chain srcnat_wan { # handle 21
+		meta l4proto tcp ip saddr 10.10.10.0/24 counter packets 0 bytes 0 snat ip to 192.168.199.222 comment "!fw4: SNAT-DMZ-Egress" # handle 3734
+		ip saddr 10.10.30.0/24 counter packets 0 bytes 0 masquerade comment "!fw4: MASQ-Production-Out" # handle 3735
+		ip saddr 10.10.20.0/24 ip daddr 10.0.0.0/8 counter packets 0 bytes 0 accept comment "!fw4: No-NAT-MGMTDMZ-Internal" # handle 3736
+		meta nfproto ipv4 masquerade comment "!fw4: Masquerade IPv4 wan traffic" # handle 3737
+	}
+
+	chain raw_prerouting { # handle 22
+		type filter hook prerouting priority raw; policy accept;
+	}
+
+	chain raw_output { # handle 23
+		type filter hook output priority raw; policy accept;
+	}
+
+	chain mangle_prerouting { # handle 24
+		type filter hook prerouting priority mangle; policy accept;
+	}
+
+	chain mangle_postrouting { # handle 25
+		type filter hook postrouting priority mangle; policy accept;
+		oifname "eth1" tcp flags & (fin | syn | rst) == syn tcp option maxseg size set rt mtu comment "!fw4: Zone wan IPv4/IPv6 egress MTU fixing" # handle 3738
+	}
+
+	chain mangle_input { # handle 26
+		type filter hook input priority mangle; policy accept;
+	}
+
+	chain mangle_output { # handle 27
+		type route hook output priority mangle; policy accept;
+	}
+
+	chain mangle_forward { # handle 28
+		type filter hook forward priority mangle; policy accept;
+		iifname "br-lan" oifname "eth1" udp dport { 5060, 5061 } counter packets 0 bytes 0 meta mark set 0x00000010 comment "!fw4: Mark-VOIP-Priority" # handle 3740
+		iifname "eth1" tcp flags & (fin | syn | rst) == syn tcp option maxseg size set rt mtu comment "!fw4: Zone wan IPv4/IPv6 ingress MTU fixing" # handle 3741
+	}
+
+	chain drop_to_wan { # handle 294
+		oifname "eth1" counter packets 0 bytes 0 drop comment "!fw4: drop wan IPv4/IPv6 traffic" # handle 3665
+	}
+
+	chain input_DMZ { # handle 295
+		meta l4proto tcp counter packets 0 bytes 0 drop comment "!fw4: Drop-Mgmt-from-DMZ" # handle 3666
+		meta l4proto udp counter packets 0 bytes 0 drop comment "!fw4: Drop-Mgmt-from-DMZ" # handle 3667
+		ct status dnat accept comment "!fw4: Accept port redirections" # handle 3668
+		jump drop_from_DMZ # handle 3669
+	}
+
+	chain output_DMZ { # handle 296
+		jump accept_to_DMZ # handle 3670
+	}
+
+	chain forward_DMZ { # handle 297
+		tcp dport { 80, 443 } counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-DMZ-Updates" # handle 3672
+		tcp dport 25 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-DMZ-SMTP-Out" # handle 3673
+		udp dport 53 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-DMZ-DNS-Out" # handle 3674
+		meta l4proto tcp counter packets 0 bytes 0 jump drop_to_wan comment "!fw4: Drop-DMZ-Any-Out" # handle 3675
+		meta l4proto udp counter packets 0 bytes 0 jump drop_to_wan comment "!fw4: Drop-DMZ-Any-Out" # handle 3676
+		ip daddr 10.10.30.50 tcp dport 3306 counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-DMZ-Prod-MySQL" # handle 3677
+		tcp dport { 389, 636 } counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-DMZ-Prod-LDAP" # handle 3679
+		meta l4proto tcp counter packets 0 bytes 0 jump drop_to_production comment "!fw4: Drop-DMZ-Prod-Any" # handle 3680
+		meta l4proto udp counter packets 0 bytes 0 jump drop_to_production comment "!fw4: Drop-DMZ-Prod-Any" # handle 3681
+		tcp dport 1433 limit rate 10/minute burst 5 packets counter packets 0 bytes 0 jump reject_to_production comment "!fw4: Log-DMZ-Denied" # handle 3682
+		jump accept_to_wan comment "!fw4: Accept DMZ to wan forwarding" # handle 3683
+		ct status dnat accept comment "!fw4: Accept port forwards" # handle 3684
+		jump drop_to_DMZ # handle 3685
+	}
+
+	chain helper_DMZ { # handle 298
+	}
+
+	chain accept_to_DMZ { # handle 299
+		oifname "br-dmz" counter packets 0 bytes 0 accept comment "!fw4: accept DMZ IPv4/IPv6 traffic" # handle 3686
+	}
+
+	chain drop_from_DMZ { # handle 300
+		iifname "br-dmz" counter packets 0 bytes 0 drop comment "!fw4: drop DMZ IPv4/IPv6 traffic" # handle 3687
+	}
+
+	chain drop_to_DMZ { # handle 301
+		oifname "br-dmz" counter packets 0 bytes 0 drop comment "!fw4: drop DMZ IPv4/IPv6 traffic" # handle 3688
+	}
+
+	chain input_MGMT_DMZ { # handle 302
+		meta l4proto tcp counter packets 0 bytes 0 drop comment "!fw4: Drop-Mgmt-from-MGMT_DMZ" # handle 3689
+		meta l4proto udp counter packets 0 bytes 0 drop comment "!fw4: Drop-Mgmt-from-MGMT_DMZ" # handle 3690
+		jump drop_from_MGMT_DMZ # handle 3691
+	}
+
+	chain output_MGMT_DMZ { # handle 303
+		jump accept_to_MGMT_DMZ # handle 3692
+	}
+
+	chain forward_MGMT_DMZ { # handle 304
+		udp dport 514 counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-MGMTDMZ-Prod-Syslog" # handle 3693
+		udp dport 161 counter packets 0 bytes 0 jump accept_to_production comment "!fw4: Allow-MGMTDMZ-Prod-SNMP" # handle 3694
+		tcp dport { 80, 443 } counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-MGMTDMZ-Updates" # handle 3696
+		meta l4proto tcp counter packets 0 bytes 0 jump drop_to_wan comment "!fw4: Drop-MGMTDMZ-Any-Out" # handle 3697
+		meta l4proto udp counter packets 0 bytes 0 jump drop_to_wan comment "!fw4: Drop-MGMTDMZ-Any-Out" # handle 3698
+		jump accept_to_wan comment "!fw4: Accept MGMT_DMZ to wan forwarding" # handle 3699
+		jump drop_to_MGMT_DMZ # handle 3700
+	}
+
+	chain helper_MGMT_DMZ { # handle 305
+	}
+
+	chain accept_to_MGMT_DMZ { # handle 306
+		oifname "br-mgmtdmz" counter packets 0 bytes 0 accept comment "!fw4: accept MGMT_DMZ IPv4/IPv6 traffic" # handle 3701
+	}
+
+	chain drop_from_MGMT_DMZ { # handle 307
+		iifname "br-mgmtdmz" counter packets 0 bytes 0 drop comment "!fw4: drop MGMT_DMZ IPv4/IPv6 traffic" # handle 3702
+	}
+
+	chain drop_to_MGMT_DMZ { # handle 308
+		oifname "br-mgmtdmz" counter packets 0 bytes 0 drop comment "!fw4: drop MGMT_DMZ IPv4/IPv6 traffic" # handle 3703
+	}
+
+	chain input_production { # handle 309
+		tcp dport 22 counter packets 0 bytes 0 accept comment "!fw4: Mgmt-SSH-from-Production" # handle 3704
+		udp dport 161 counter packets 0 bytes 0 accept comment "!fw4: Allow-SNMP-from-Production" # handle 3705
+		ct status dnat accept comment "!fw4: Accept port redirections" # handle 3706
+		jump reject_from_production # handle 3707
+	}
+
+	chain output_production { # handle 310
+		jump accept_to_production # handle 3708
+	}
+
+	chain forward_production { # handle 311
+		tcp dport 9100 counter packets 0 bytes 0 jump accept_to_MGMT_DMZ comment "!fw4: Allow-Prod-MGMTDMZ-Metrics" # handle 3709
+		ip saddr 10.10.10.10 tcp dport { 80, 443 } counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-Prod-Updates" # handle 3711
+		udp dport 123 counter packets 0 bytes 0 jump accept_to_wan comment "!fw4: Allow-Prod-NTP" # handle 3712
+		meta l4proto tcp counter packets 0 bytes 0 jump drop_to_wan comment "!fw4: Drop-Prod-Any-Out" # handle 3713
+		meta l4proto udp counter packets 0 bytes 0 jump drop_to_wan comment "!fw4: Drop-Prod-Any-Out" # handle 3714
+		jump accept_to_wan comment "!fw4: Accept production to wan forwarding" # handle 3715
+		ct status dnat accept comment "!fw4: Accept port forwards" # handle 3716
+		jump drop_to_production # handle 3717
+	}
+
+	chain helper_production { # handle 312
+	}
+
+	chain accept_to_production { # handle 313
+		oifname "br-prod" counter packets 0 bytes 0 accept comment "!fw4: accept production IPv4/IPv6 traffic" # handle 3718
+	}
+
+	chain reject_from_production { # handle 314
+		iifname "br-prod" counter packets 0 bytes 0 jump handle_reject comment "!fw4: reject production IPv4/IPv6 traffic" # handle 3719
+	}
+
+	chain drop_to_production { # handle 315
+		oifname "br-prod" counter packets 0 bytes 0 drop comment "!fw4: drop production IPv4/IPv6 traffic" # handle 3721
+	}
+
+	chain dstnat_wan { # handle 316
+		meta nfproto ipv4 tcp dport 80 counter packets 0 bytes 0 dnat ip to 10.10.10.10:80 comment "!fw4: DNAT-Web-HTTP" # handle 3728
+		meta nfproto ipv4 tcp dport 443 counter packets 0 bytes 0 dnat ip to 10.10.10.10:443 comment "!fw4: DNAT-Web-HTTPS" # handle 3729
+		meta nfproto ipv4 tcp dport 25 counter packets 0 bytes 0 dnat ip to 10.10.10.20:25 comment "!fw4: DNAT-Mail-SMTP" # handle 3730
+		meta nfproto ipv4 tcp dport 587 counter packets 0 bytes 0 dnat ip to 10.10.10.20:587 comment "!fw4: DNAT-Mail-Submit" # handle 3731
+		meta nfproto ipv4 tcp dport 2222 counter packets 0 bytes 0 dnat ip to 10.10.30.5:22 comment "!fw4: DNAT-SSH-Jumphost" # handle 3732
+		meta nfproto ipv4 tcp dport 33890 counter packets 0 bytes 0 dnat ip to 10.10.30.60:3389 comment "!fw4: DNAT-RDP-Terminal" # handle 3733
+	}
+
+	chain dstnat_DMZ { # handle 317
+	}
+
+	chain srcnat_DMZ { # handle 318
+	}
+
+	chain dstnat_production { # handle 319
+	}
+
+	chain srcnat_production { # handle 320
+	}
+
+	chain reject_to_production { # handle 1662
+		oifname "br-prod" counter packets 0 bytes 0 jump handle_reject comment "!fw4: reject production IPv4/IPv6 traffic" # handle 3720
+	}
+
+	chain reject_to_lan { # handle 1847
+		oifname "br-lan" counter packets 0 bytes 0 jump handle_reject comment "!fw4: reject lan IPv4/IPv6 traffic" # handle 3626
+	}
+
+	chain drop_to_lan { # handle 2791
+		oifname "br-lan" counter packets 0 bytes 0 drop comment "!fw4: drop lan IPv4/IPv6 traffic" # handle 3627
+	}
+}

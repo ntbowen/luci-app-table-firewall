@@ -1,0 +1,167 @@
+{
+	"values": {
+		"cfg01411c": {
+			".anonymous": true,
+			".type": "dnsmasq",
+			".name": "cfg01411c",
+			".index": 0,
+			"domainneeded": "1",
+			"localise_queries": "1",
+			"rebind_protection": "1",
+			"rebind_localhost": "1",
+			"local": "/lan/",
+			"domain": "lan",
+			"expandhosts": "1",
+			"cachesize": "1000",
+			"authoritative": "1",
+			"readethers": "1",
+			"leasefile": "/tmp/dhcp.leases",
+			"resolvfile": "/tmp/resolv.conf.d/resolv.conf.auto",
+			"localservice": "1",
+			"ednspacket_max": "1232"
+		},
+		"lan": {
+			".anonymous": false,
+			".type": "dhcp",
+			".name": "lan",
+			".index": 1,
+			"interface": "lan",
+			"start": "100",
+			"limit": "150",
+			"leasetime": "12h",
+			"dhcpv4": "server",
+			"dhcpv6": "disabled",
+			"ra": "disabled",
+			"ra_slaac": "1",
+			"ra_flags": [
+				"managed-config",
+				"other-config"
+			],
+			"ignore": "1"
+		},
+		"wan": {
+			".anonymous": false,
+			".type": "dhcp",
+			".name": "wan",
+			".index": 2,
+			"interface": "wan",
+			"ignore": "1"
+		},
+		"odhcpd": {
+			".anonymous": false,
+			".type": "odhcpd",
+			".name": "odhcpd",
+			".index": 3,
+			"maindhcp": "0",
+			"leasefile": "/tmp/hosts/odhcpd",
+			"leasetrigger": "/usr/sbin/odhcpd-update",
+			"loglevel": "4",
+			"piofolder": "/tmp/odhcpd-piofolder"
+		},
+		"cfg05fe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg05fe63",
+			".index": 4,
+			"name": "web01",
+			"ip": "10.10.10.10",
+			"mac": "02:00:0a:0a:0a:0a"
+		},
+		"cfg06fe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg06fe63",
+			".index": 5,
+			"name": "mail01",
+			"ip": "10.10.10.20",
+			"mac": "02:00:0a:0a:0a:14"
+		},
+		"cfg07fe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg07fe63",
+			".index": 6,
+			"name": "proxy01",
+			"ip": "10.10.10.30",
+			"mac": "02:00:0a:0a:0a:1e"
+		},
+		"cfg08fe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg08fe63",
+			".index": 7,
+			"name": "log01",
+			"ip": "10.10.20.10",
+			"mac": "02:00:0a:0a:14:0a"
+		},
+		"cfg09fe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg09fe63",
+			".index": 8,
+			"name": "monitor01",
+			"ip": "10.10.20.20",
+			"mac": "02:00:0a:0a:14:14"
+		},
+		"cfg0afe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg0afe63",
+			".index": 9,
+			"name": "jump01",
+			"ip": "10.10.30.5",
+			"mac": "02:00:0a:0a:1e:05"
+		},
+		"cfg0bfe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg0bfe63",
+			".index": 10,
+			"name": "db01",
+			"ip": "10.10.30.50",
+			"mac": "02:00:0a:0a:1e:32"
+		},
+		"cfg0cfe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg0cfe63",
+			".index": 11,
+			"name": "term01",
+			"ip": "10.10.30.60",
+			"mac": "02:00:0a:0a:1e:3c"
+		},
+		"cfg0dfe63": {
+			".anonymous": true,
+			".type": "host",
+			".name": "cfg0dfe63",
+			".index": 12,
+			"name": "nas01",
+			"ip": "192.168.199.50",
+			"mac": "02:00:c0:a8:c7:32"
+		},
+		"cfg0ef37d": {
+			".anonymous": true,
+			".type": "domain",
+			".name": "cfg0ef37d",
+			".index": 13,
+			"name": "www.tinypixelmapper.com",
+			"ip": "192.168.199.36"
+		},
+		"cfg0ff37d": {
+			".anonymous": true,
+			".type": "domain",
+			".name": "cfg0ff37d",
+			".index": 14,
+			"name": "nginx",
+			"ip": "10.10.10.10"
+		},
+		"cfg10f37d": {
+			".anonymous": true,
+			".type": "domain",
+			".name": "cfg10f37d",
+			".index": 15,
+			"name": "nginx2",
+			"ip": "10.10.10.10"
+		}
+	}
+}

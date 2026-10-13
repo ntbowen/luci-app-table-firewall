@@ -1,0 +1,47 @@
+{
+	"admin/network/table_firewall": {
+		"title": "Table Firewall",
+		"order": 55,
+		"action": {
+			"type": "firstchild"
+		},
+		"depends": {
+			"acl": [ "luci-app-table-firewall" ]
+		}
+	},
+
+	"admin/network/table_firewall/rules": {
+		"title": "Traffic Rules",
+		"order": 10,
+		"action": {
+			"type": "view",
+			"path": "table-firewall/rules"
+		}
+	},
+
+	"admin/network/table_firewall/zones": {
+		"title": "General Settings",
+		"order": 20,
+		"action": {
+			"type": "view",
+			"path": "firewall/zones"
+		},
+		"depends": {
+			"acl": [ "luci-app-table-firewall", "luci-app-firewall" ],
+			"fs": { "/www/luci-static/resources/view/firewall/zones.js": "file" }
+		}
+	},
+
+	"admin/network/table_firewall/ipsets": {
+		"title": "IP Sets",
+		"order": 30,
+		"action": {
+			"type": "view",
+			"path": "firewall/ipsets"
+		},
+		"depends": {
+			"acl": [ "luci-app-table-firewall", "luci-app-firewall" ],
+			"fs": { "/www/luci-static/resources/view/firewall/ipsets.js": "file" }
+		}
+	}
+}

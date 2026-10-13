@@ -1,0 +1,819 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Copyright (C) 2026 Gerhard Mautendorfer (MaidByC) */
+/* Table Firewall styles.
+ *
+ * Everything here is scoped to [data-page^="admin-network-table_firewall"] so
+ * stock LuCI pages keep the theme's own layout. The themes cap content at
+ * .container { max-width: 940px }, which on a wide monitor leaves a firewall
+ * table using about a third of the screen -- unusable for the very case this
+ * app exists for.
+ */
+
+[data-page^="admin-network-table_firewall"] .container {
+	max-width: none;
+	width: auto;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+/* Some themes constrain the view wrapper rather than .container. */
+[data-page^="admin-network-table_firewall"] #maincontent,
+[data-page^="admin-network-table_firewall"] #maincontent > .container,
+[data-page^="admin-network-table_firewall"] #view {
+	max-width: none;
+	width: auto;
+}
+
+/* --- sticky header: search + change/apply ------------------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-header {
+	position: sticky;
+	/* park below the theme's own sticky nav (z-index 800), never under it */
+	top: var(--tf-nav-h, 3.25rem);
+	z-index: 700;
+	display: flex;
+	flex-wrap: wrap;
+	gap: .75rem;
+	align-items: center;
+	justify-content: space-between;
+	padding: .6rem .8rem;
+	margin-bottom: 1rem;
+	border: 1px solid var(--border-color-medium, #ccc);
+	border-radius: 4px;
+	background: var(--background-color-medium, #f6f6f6);
+}
+
+/* Staged changes are impossible to walk away from unnoticed. Colour is paired
+   with an icon and the literal count, never carrying the meaning alone. */
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty {
+	background: #b3231f;
+	border-color: #7d1815;
+	color: #fff;
+}
+
+/* White applies to the bar's own text, never to controls.
+   `.btn`/`.cbi-button` set `color: var(--on-color)` themselves, and forcing
+   white over that made every button invisible on the light themes, whose
+   buttons are near-white — while looking fine on the dark theme. Controls keep
+   their own colours; only labels inherit the white. */
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .btn,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .cbi-button,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty button,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty input,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty select {
+	color: var(--on-color, var(--text-color-high, #222));
+}
+
+/* give the controls a visible edge against the red */
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .btn,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .cbi-button {
+	border-color: rgba(255, 255, 255, .65);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-search {
+	flex: 1 1 22rem;
+	min-width: 14rem;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-actions {
+	display: flex;
+	gap: .5rem;
+	align-items: center;
+}
+
+/* --- grouped tables ----------------------------------------------------- */
+
+/* No `overflow: hidden` here: it would make this a scroll container and trap
+   the sticky group header inside the group, so the header would slide down
+   over its own rows instead of parking under the toolbar. */
+[data-page^="admin-network-table_firewall"] .tf-group {
+	margin-bottom: 1.25rem;
+	border: 1px solid var(--border-color-low, #ddd);
+	border-radius: 4px;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-group-head {
+	/* the zone pair stays visible while scrolling its own long table */
+	position: sticky;
+	top: calc(var(--tf-nav-h, 3.25rem) + var(--tf-bar-h, 3.5rem));
+	z-index: 600;
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .4rem .7rem;
+	font-weight: bold;
+	background: var(--background-color-medium, #eee);
+	cursor: pointer;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-group-empty .tf-group-head {
+	opacity: .55;
+	font-weight: normal;
+}
+
+/* Wide rule tables scroll inside their group rather than the page. */
+[data-page^="admin-network-table_firewall"] .tf-scroll {
+	overflow-x: auto;
+}
+
+/* A disabled rule stays readable and stays in position -- it is dimmed and
+   struck through, not hidden, because its position still matters. */
+[data-page^="admin-network-table_firewall"] .tf-row-disabled {
+	opacity: .5;
+	border-left: 3px dashed var(--border-color-medium, #999);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-row-disabled .tf-name {
+	text-decoration: line-through;
+}
+
+/* A wildcard rule shown inside a group it affects but does not belong to.
+   Marked so it is never mistaken for a rule local to this zone pair. */
+[data-page^="admin-network-table_firewall"] .tf-row-shadow {
+	background: rgba(255, 176, 0, .12);
+	border-left: 3px solid #e0a800;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-terminator {
+	font-style: italic;
+	opacity: .8;
+	background: var(--background-color-low, #fafafa);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-badge {
+	display: inline-block;
+	padding: 0 .4em;
+	border-radius: 3px;
+	background: var(--background-color-high, #ddd);
+	font-size: 90%;
+}
+
+/* --- search: highlight only, never hide --------------------------------- */
+
+/* Non-matching rules keep full legibility. A firewall rule's meaning depends
+   on what precedes it, so hiding or dimming context would let the UI show a
+   rule that in reality never fires. */
+[data-page^="admin-network-table_firewall"] .tf-row-match {
+	background: rgba(255, 235, 59, .28);
+	border-left: 3px solid #f5c400;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-row-match.tf-row-current {
+	background: rgba(255, 193, 7, .55);
+	outline: 2px solid #f5a300;
+	outline-offset: -2px;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-hit {
+	background: #ffe14d;
+	color: #000;
+	border-radius: 2px;
+	padding: 0 .1em;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-match-count {
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+/* --- header internals --------------------------------------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-search-wrap {
+	flex: 1 1 24rem;
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+[data-page^="admin-network-table_firewall"] input.tf-search { width: 100%; }
+
+/* overlaid on the right of the field, like a browser find bar */
+[data-page^="admin-network-table_firewall"] .tf-search-tools {
+	position: absolute;
+	right: .3rem;
+	top: 50%;
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	gap: .25rem;
+	pointer-events: none;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-search-tools > * { pointer-events: auto; }
+
+/* These overlay the search input, not the toolbar, so they take the input's
+   foreground colour — never the bar's. When the bar goes red it sets
+   color:#fff on its subtree, which put white text on the white field. Stated
+   unconditionally because the backdrop is the input in every state. */
+[data-page^="admin-network-table_firewall"] .tf-search-tools,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .tf-search-tools,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .tf-search-tools .tf-match-count,
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .tf-search-tools .tf-nav {
+	color: var(--text-color-high, #222);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-search-tools .tf-match-count {
+	opacity: .7;
+	font-size: 90%;
+	padding-right: .15rem;
+}
+
+/* flat inside the field rather than full buttons sitting on top of it */
+[data-page^="admin-network-table_firewall"] .tf-nav {
+	padding: 0 .4rem;
+	line-height: 1.5;
+	min-width: 0;
+	background: transparent;
+	border-color: transparent;
+	box-shadow: none;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-nav:hover:not([disabled]) {
+	background: var(--background-color-high, #e6e6e6);
+	border-color: var(--border-color-medium, #999);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-nav[disabled] { opacity: .35; }
+
+[data-page^="admin-network-table_firewall"] .tf-tabs {
+	display: flex;
+	gap: .35rem;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-col-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+	gap: .3rem .8rem;
+	margin: .75rem 0;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-col-opt {
+	display: flex;
+	align-items: center;
+	gap: .35rem;
+	cursor: pointer;
+}
+
+/* --- table internals ---------------------------------------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-c-pos   { text-align: right; opacity: .6; }
+[data-page^="admin-network-table_firewall"] .tf-c-on    { text-align: center; }
+[data-page^="admin-network-table_firewall"] .tf-c-marks { width: 4em; white-space: nowrap; }
+
+[data-page^="admin-network-table_firewall"] .tf-muted { opacity: .55; }
+[data-page^="admin-network-table_firewall"] .tf-addr { display: block; }
+
+[data-page^="admin-network-table_firewall"] .tf-zone-device { background: #4a5568; color: #fff; }
+[data-page^="admin-network-table_firewall"] .tf-zone-any { background: #e0a800; color: #000; }
+
+/* the cell that actually matched, inside an already-highlighted row */
+[data-page^="admin-network-table_firewall"] .tf-cell-hit {
+	box-shadow: inset 0 0 0 2px #f5a300;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-badge-match { background: #f5c400; color: #000; }
+
+/* "this rule carries criteria you cannot currently see" */
+[data-page^="admin-network-table_firewall"] .tf-mark-extra {
+	background: #2b6cb0; color: #fff; cursor: help;
+}
+[data-page^="admin-network-table_firewall"] .tf-mark-shadow {
+	background: #e0a800; color: #000; cursor: help;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-term,
+[data-page^="admin-network-table_firewall"] .tf-terminator td {
+	font-style: italic;
+	opacity: .85;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-group-head .tf-term {
+	margin-left: auto;
+	font-weight: normal;
+	font-size: 90%;
+}
+
+/* rules evaluated on a different netfilter hook (mangle / raw) */
+[data-page^="admin-network-table_firewall"] .tf-otherhead td {
+	background: var(--background-color-low, #f0f0f0);
+	font-style: italic;
+	opacity: .85;
+}
+[data-page^="admin-network-table_firewall"] .tf-row-other {
+	border-left: 3px solid #7b6cb0;
+}
+
+/* --- zone pair heading --------------------------------------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-pair {
+	display: inline-flex;
+	align-items: center;
+	gap: .4rem;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-arrow {
+	opacity: .7;
+	font-weight: normal;
+}
+
+/* the group header is opaque so sticking over rows stays readable */
+[data-page^="admin-network-table_firewall"] .tf-group-head {
+	background: var(--background-color-medium, #eee);
+	box-shadow: 0 1px 0 var(--border-color-low, #ddd);
+}
+
+[data-page^="admin-network-table_firewall"] .zonebadge {
+	display: inline-block;
+	padding: 0 .45em;
+	border-radius: 3px;
+	white-space: nowrap;
+}
+
+/* --- identical column widths across every group table -------------------- */
+
+/* Each zone pair is its own <table>, so by default each one sizes its columns
+   to its own content and the eye has to re-find every field further down the
+   page. `table-layout: fixed` plus explicit per-column widths makes all of
+   them lay out identically. */
+[data-page^="admin-network-table_firewall"] .tf-table {
+	table-layout: fixed;
+	width: 100%;
+}
+
+/* Values wrap rather than truncate: this view must never imply a rule is
+   narrower than it is. */
+[data-page^="admin-network-table_firewall"] .tf-table td,
+[data-page^="admin-network-table_firewall"] .tf-table th {
+	overflow-wrap: anywhere;
+	vertical-align: top;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-col-pos { width: var(--tf-w-pos, 2.6em); }
+[data-page^="admin-network-table_firewall"] .tf-col-enabled { width: var(--tf-w-enabled, 2.4em); }
+[data-page^="admin-network-table_firewall"] .tf-col-name { width: var(--tf-w-name, 18%); }
+[data-page^="admin-network-table_firewall"] .tf-col-src { width: var(--tf-w-src, 8.5em); }
+[data-page^="admin-network-table_firewall"] .tf-col-dest { width: var(--tf-w-dest, 8.5em); }
+[data-page^="admin-network-table_firewall"] .tf-col-src_ip { width: var(--tf-w-src_ip, 12%); }
+[data-page^="admin-network-table_firewall"] .tf-col-dest_ip { width: var(--tf-w-dest_ip, 12%); }
+[data-page^="admin-network-table_firewall"] .tf-col-proto   { width: var(--tf-w-proto, 6em); }
+[data-page^="admin-network-table_firewall"] .tf-col-service { width: var(--tf-w-service, 13%); }
+[data-page^="admin-network-table_firewall"] .tf-col-target { width: var(--tf-w-target, 8.5em); }
+[data-page^="admin-network-table_firewall"] .tf-col-src_port { width: var(--tf-w-src_port, 7em); }
+[data-page^="admin-network-table_firewall"] .tf-col-family { width: var(--tf-w-family, 4.6em); }
+[data-page^="admin-network-table_firewall"] .tf-col-time { width: var(--tf-w-time, 12em); }
+[data-page^="admin-network-table_firewall"] .tf-col-limit { width: var(--tf-w-limit, 7em); }
+[data-page^="admin-network-table_firewall"] .tf-col-log { width: var(--tf-w-log, 4em); }
+[data-page^="admin-network-table_firewall"] .tf-col-mark { width: var(--tf-w-mark, 6em); }
+[data-page^="admin-network-table_firewall"] .tf-col-dscp { width: var(--tf-w-dscp, 6em); }
+[data-page^="admin-network-table_firewall"] .tf-col-helper { width: var(--tf-w-helper, 8em); }
+[data-page^="admin-network-table_firewall"] .tf-col-ipset { width: var(--tf-w-ipset, 8em); }
+[data-page^="admin-network-table_firewall"] .tf-col-device { width: var(--tf-w-device, 8em); }
+[data-page^="admin-network-table_firewall"] .tf-col-extra { width: var(--tf-w-extra, 12em); }
+[data-page^="admin-network-table_firewall"] .tf-col-chain { width: var(--tf-w-chain, 11em); }
+[data-page^="admin-network-table_firewall"] .tf-col-sid { width: var(--tf-w-sid, 9em); }
+
+/* below this the fixed columns stop fitting, so let the table scroll in its
+   own container rather than squeezing the data */
+@media (max-width: 1100px) {
+	[data-page^="admin-network-table_firewall"] .tf-table { min-width: 1050px; }
+}
+
+/* family tabs now live in the sticky toolbar */
+[data-page^="admin-network-table_firewall"] .tf-header .tf-tabs { gap: .25rem; }
+
+/* --- family tabs: filled active state ------------------------------------ */
+
+/* The theme gives plain .cbi-button-action only a border-colour; the fill is
+   reserved for .important. On the red staged-changes bar that border all but
+   disappears, so the active tab gets a real fill built from the theme's own
+   primary variables rather than a hardcoded colour. */
+[data-page^="admin-network-table_firewall"] .tf-tabs .cbi-button {
+	background: var(--background-color-high, #ddd);
+	border: 1px solid var(--border-color-medium, #999);
+	opacity: .85;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-tabs .cbi-button-action {
+	background: linear-gradient(var(--primary-color-medium, #0069d9),
+	                            var(--primary-color-low, #0053ad));
+	border-color: var(--primary-color-high, #0a84ff);
+	color: var(--on-primary-color, #fff);
+	font-weight: bold;
+	opacity: 1;
+}
+
+/* keep it legible once the bar goes red */
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .tf-tabs .cbi-button {
+	border-color: rgba(255, 255, 255, .5);
+	color: var(--on-color, var(--text-color-high, #222));
+}
+/* the active tab keeps its own filled treatment and its own foreground */
+[data-page^="admin-network-table_firewall"] .tf-header.tf-dirty .tf-tabs .cbi-button-action {
+	border-color: #fff;
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, .6);
+	color: var(--on-primary-color, #fff);
+}
+
+/* --- IPv column: two fixed slots ----------------------------------------- */
+
+/* IPv4 is always the left slot and IPv6 always the right, so the family can be
+   read from position alone while scanning. An inapplicable family keeps its
+   slot but is not drawn, which is what keeps the two columns of chips aligned
+   all the way down. */
+[data-page^="admin-network-table_firewall"] .tf-ipv-pair {
+	display: inline-flex;
+	gap: 2px;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-ipv {
+	display: inline-block;
+	width: 1.9em;
+	line-height: 1.5em;
+	text-align: center;
+	border-radius: 3px;
+	font-size: 85%;
+	font-weight: bold;
+	color: #fff;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-ipv4 { background: #2b6cb0; }
+[data-page^="admin-network-table_firewall"] .tf-ipv6 { background: #6b46c1; }
+
+/* keeps the slot, draws nothing */
+[data-page^="admin-network-table_firewall"] .tf-ipv-off {
+	background: transparent;
+	color: transparent;
+}
+
+/* --- resize strip -------------------------------------------------------- */
+
+/* One continuous rule along the bottom edge of the toolbar: a dot at every
+   column split, the column name sitting in the gap. It doubles as the
+   always-visible column legend, because the per-table header rows scroll away.
+   The strip and the table are driven by the same --tf-w-* properties, so they
+   cannot drift out of alignment. */
+[data-page^="admin-network-table_firewall"] .tf-resize {
+	display: flex;
+	align-items: center;
+	flex-basis: 100%;
+	box-sizing: border-box;
+	margin-top: .45rem;
+	margin-bottom: -.35rem;
+	user-select: none;
+	font-size: 85%;
+	line-height: 1.4;
+	overflow: hidden;
+}
+
+/* The theme pads table cells `10px 10px 9px`, so the label starts at the same
+   x as the column's content rather than at the dot. */
+[data-page^="admin-network-table_firewall"] .tf-rs-cell {
+	display: flex;
+	align-items: center;
+	gap: .35rem;
+	min-width: 0;
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	padding: 0 10px;
+}
+
+/* fills whatever is left between the label and the next dot */
+[data-page^="admin-network-table_firewall"] .tf-rs-line {
+	flex: 1 1 auto;
+	min-width: 0;
+	height: 1px;
+	background: currentColor;
+	opacity: .35;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-rs-label {
+	flex: 0 1 auto;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	opacity: .85;
+	font-weight: bold;
+}
+
+/* Zero-width: a dot marks a boundary, it must not *occupy* one. As real flex
+   items they added 5px per split and every column drifted further right than
+   the table column it was supposed to mark. The visible dot is drawn by a
+   pseudo-element centred on the boundary instead. */
+[data-page^="admin-network-table_firewall"] .tf-rs-dot {
+	flex: 0 0 0;
+	width: 0;
+	align-self: stretch;
+	position: relative;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-rs-dot::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 5px;
+	height: 5px;
+	margin: -2.5px 0 0 -2.5px;
+	border-radius: 50%;
+	background: currentColor;
+	opacity: .55;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-rs-handle {
+	cursor: col-resize;
+}
+
+/* the dot is 5px, so give the pointer a target it can actually hit */
+[data-page^="admin-network-table_firewall"] .tf-rs-handle::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -6px;
+	width: 12px;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-rs-handle:hover::before,
+[data-page^="admin-network-table_firewall"] .tf-rs-handle:focus::before {
+	opacity: 1;
+	width: 7px;
+	height: 7px;
+	margin: -3.5px 0 0 -3.5px;
+	box-shadow: 0 0 0 3px rgba(127, 127, 127, .45);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-rs-handle:focus { outline: none; }
+
+[data-page^="admin-network-table_firewall"] .tf-rs-end { opacity: .3; }
+
+/* keep the pointer consistent while a drag is in progress */
+body.tf-resizing, body.tf-resizing * { cursor: col-resize !important; }
+
+/* Below this the tables carry a min-width and scroll inside their own
+   containers, so the dots would no longer sit over the columns they claim to
+   control. Better absent than lying. */
+@media (max-width: 1100px) {
+	[data-page^="admin-network-table_firewall"] .tf-resize { display: none; }
+}
+
+/* rules the grouping could not place — always shown, never dropped */
+[data-page^="admin-network-table_firewall"] .tf-group-orphan {
+	border-color: #b3231f;
+}
+[data-page^="admin-network-table_firewall"] .tf-group-orphan .tf-group-head {
+	background: rgba(179, 35, 31, .18);
+}
+
+/* rows are editable, so say so on hover */
+[data-page^="admin-network-table_firewall"] .tf-row { cursor: default; }
+[data-page^="admin-network-table_firewall"] .tf-row:hover {
+	outline: 1px solid var(--border-color-medium, #888);
+	outline-offset: -1px;
+}
+
+/* --- row actions menu ----------------------------------------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-c-actions { width: 2.4em; text-align: center; }
+
+[data-page^="admin-network-table_firewall"] .tf-menu-btn {
+	border: 1px solid transparent;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	border-radius: 3px;
+	padding: 0 .35em;
+	line-height: 1.4;
+	font-size: 115%;
+	opacity: .65;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-row:hover .tf-menu-btn,
+[data-page^="admin-network-table_firewall"] .tf-menu-btn:focus {
+	opacity: 1;
+	border-color: var(--border-color-medium, #888);
+}
+
+/* Appended to <body> and positioned fixed, because the row sits inside
+   .tf-scroll whose overflow would clip a menu anchored in the table. */
+.tf-menu {
+	z-index: 1200;
+	min-width: 11.5em;
+	padding: .25rem;
+	border-radius: 4px;
+	background: var(--background-color-high, #fff);
+	border: 1px solid var(--border-color-medium, #999);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+	display: flex;
+	flex-direction: column;
+}
+
+.tf-menu .tf-menu-item {
+	background: none;
+	border: 0;
+	color: inherit;
+	text-align: left;
+	padding: .4rem .6rem;
+	cursor: pointer;
+	border-radius: 3px;
+	white-space: nowrap;
+}
+
+.tf-menu .tf-menu-item:hover,
+.tf-menu .tf-menu-item:focus {
+	background: var(--primary-color-medium, #0069d9);
+	color: var(--on-primary-color, #fff);
+	outline: none;
+}
+
+.tf-menu .tf-menu-danger:hover,
+.tf-menu .tf-menu-danger:focus { background: #b3231f; color: #fff; }
+
+/* --- drag to reorder ------------------------------------------------------ */
+
+[data-page^="admin-network-table_firewall"] .tf-c-handle { width: 1.9em; text-align: center; }
+
+[data-page^="admin-network-table_firewall"] .tf-handle {
+	cursor: grab;
+	opacity: .35;
+	user-select: none;
+	line-height: 1;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-row:hover .tf-handle { opacity: .9; }
+[data-page^="admin-network-table_firewall"] .tf-handle:active { cursor: grabbing; }
+
+/* where the row will land */
+[data-page^="admin-network-table_firewall"] .tf-drop-before > td {
+	box-shadow: inset 0 3px 0 -1px #0a84ff;
+}
+[data-page^="admin-network-table_firewall"] .tf-drop-after > td {
+	box-shadow: inset 0 -3px 0 -1px #0a84ff;
+}
+
+/* --- rules with staged, unapplied changes --------------------------------- */
+
+/* A colour not otherwise in use here: amber is the search hit and the wildcard
+   shadow, blue is the drop indicator and IPv4, purple is IPv6 and the mangle
+   block, red is delete and the dirty toolbar. The inset bar avoids fighting
+   the left borders that mark disabled and shadow rows, and the ✎ badge carries
+   the meaning so colour is never the only signal. */
+[data-page^="admin-network-table_firewall"] .tf-row-changed > td {
+	background: rgba(15, 155, 142, .16);
+	box-shadow: inset 4px 0 0 -1px #0f9b8e;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-row-changed:hover > td {
+	background: rgba(15, 155, 142, .24);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-mark-pending {
+	background: #0f9b8e;
+	color: #fff;
+	cursor: help;
+}
+
+/* --- per-source-zone sections, in packet-flow order ---------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-zone-head {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	margin: 1.5rem 0 .5rem;
+	padding-bottom: .3rem;
+	border-bottom: 2px solid var(--border-color-medium, #999);
+	font-size: 115%;
+	font-weight: bold;
+}
+
+/* NAT runs on a different netfilter hook from the filter rules, so its blocks
+   are visually distinct — they are never part of the ordering around them. */
+[data-page^="admin-network-table_firewall"] .tf-group-nat {
+	border-color: #7b6cb0;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-group-nat .tf-group-head {
+	background: rgba(123, 108, 176, .18);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-group-dstnat { border-left: 4px solid #2b6cb0; }
+[data-page^="admin-network-table_firewall"] .tf-group-srcnat { border-left: 4px solid #8a5a2b; }
+
+/* an address a NAT rule rewrites *to*, never a match criterion */
+[data-page^="admin-network-table_firewall"] .tf-rewrite {
+	display: block;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+/* --- NAT rendered beside the pair it affects ----------------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-nathead td {
+	background: var(--background-color-low, #f2f2f2);
+	font-style: italic;
+	opacity: .9;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-nathead-dstnat td { border-left: 4px solid #2b6cb0; }
+
+/* the shared source-NAT summary is a control, so it looks like one */
+[data-page^="admin-network-table_firewall"] .tf-nathead-srcnat td {
+	border-left: 4px solid #8a5a2b;
+	cursor: pointer;
+	user-select: none;
+}
+[data-page^="admin-network-table_firewall"] .tf-nathead-srcnat:hover td {
+	background: var(--background-color-medium, #e8e8e8);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-caret {
+	display: inline-block;
+	width: 1em;
+	opacity: .7;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-badge-masq { background: #8a5a2b; color: #fff; }
+
+[data-page^="admin-network-table_firewall"] .tf-row-nat > td {
+	background: rgba(123, 108, 176, .08);
+}
+
+/* a port forward an earlier one already swallows */
+[data-page^="admin-network-table_firewall"] .tf-mark-clash {
+	background: #b3231f;
+	color: #fff;
+	cursor: help;
+}
+
+/* --- foldable source-zone sections --------------------------------------- */
+
+[data-page^="admin-network-table_firewall"] .tf-zone-head {
+	cursor: pointer;
+	user-select: none;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-zone-head:hover {
+	background: var(--background-color-medium, #eee);
+}
+
+[data-page^="admin-network-table_firewall"] .tf-zone-head.tf-folded {
+	opacity: .8;
+	border-bottom-style: dashed;
+}
+
+/* Beside the zone name, not flung to the far right: on a wide screen a
+   right-aligned summary is far enough from what it describes to be missed. */
+[data-page^="admin-network-table_firewall"] .tf-zone-counts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .3rem;
+	margin-left: .5rem;
+	font-size: 80%;
+	font-weight: normal;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-badge-dnat     { background: #2b6cb0; color: #fff; }
+[data-page^="admin-network-table_firewall"] .tf-badge-snat     { background: #8a5a2b; color: #fff; }
+[data-page^="admin-network-table_firewall"] .tf-badge-off      { background: #7b6cb0; color: #fff; }
+[data-page^="admin-network-table_firewall"] .tf-badge-disabled { background: #6b7280; color: #fff; }
+
+/* Further names for the same address, revealed on hover. Drawn as a solid
+   chip like the ✳ wildcard marker and the v4/v6 chips rather than a faint
+   inline note, so it reads as a control you can hover, not as punctuation.
+   Slate, because amber, blue, purple, red, teal and brown are all taken by
+   other markers. */
+[data-page^="admin-network-table_firewall"] .tf-mark-names {
+	display: inline-block;
+	min-width: 1.9em;
+	line-height: 1.5em;
+	padding: 0 .35em;
+	text-align: center;
+	border-radius: 3px;
+	font-size: 85%;
+	font-weight: bold;
+	background: #5a6b7d;
+	color: #fff;
+	cursor: help;
+	margin-left: .35em;
+	vertical-align: baseline;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-mark-names:hover {
+	background: #46545f;
+}
+
+/* --- family toggles ------------------------------------------------------ */
+
+/* Independent toggles, not tabs, so "off" has to look switched off rather than
+   merely unselected. */
+[data-page^="admin-network-table_firewall"] .tf-fam[aria-pressed="false"] {
+	opacity: .55;
+	text-decoration: line-through;
+	text-decoration-thickness: 1px;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-fam[aria-pressed="true"] {
+	opacity: 1;
+	text-decoration: none;
+}
