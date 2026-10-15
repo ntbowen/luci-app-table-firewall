@@ -105,6 +105,9 @@
 	padding: .4rem .7rem;
 	font-weight: bold;
 	background: var(--background-color-medium, #eee);
+	/* pair an ink colour with the surface: on a light-on-dark theme the
+	   inherited colour can vanish against the light fallback */
+	color: var(--text-color-high, #222);
 	cursor: pointer;
 }
 
@@ -258,9 +261,10 @@
 
 /* --- table internals ---------------------------------------------------- */
 
-[data-page^="admin-network-table_firewall"] .tf-c-pos   { text-align: right; opacity: .6; }
-[data-page^="admin-network-table_firewall"] .tf-c-on    { text-align: center; }
-[data-page^="admin-network-table_firewall"] .tf-c-marks { width: 4em; white-space: nowrap; }
+/* specificity has to stay above the generic td reset above */
+[data-page^="admin-network-table_firewall"] .tf-table .tf-c-pos   { text-align: right; opacity: .6; }
+[data-page^="admin-network-table_firewall"] .tf-table .tf-c-on    { text-align: center; }
+[data-page^="admin-network-table_firewall"] .tf-table .tf-c-marks { width: 4em; white-space: nowrap; text-align: center; }
 
 [data-page^="admin-network-table_firewall"] .tf-muted { opacity: .55; }
 [data-page^="admin-network-table_firewall"] .tf-addr { display: block; }
@@ -343,11 +347,35 @@
 }
 
 /* Values wrap rather than truncate: this view must never imply a rule is
-   narrower than it is. */
+   narrower than it is. The display/white-space/height resets matter on
+   themes that repurpose .td/.th for their own layouts — kucat centres them
+   and sets white-space:nowrap, which would let long values burst out of a
+   fixed-layout column instead of wrapping. */
 [data-page^="admin-network-table_firewall"] .tf-table td,
-[data-page^="admin-network-table_firewall"] .tf-table th {
-	overflow-wrap: anywhere;
+[data-page^="admin-network-table_firewall"] .tf-table th,
+[data-page^="admin-network-table_firewall"] .tf-table .tr > .td,
+[data-page^="admin-network-table_firewall"] .tf-table .tr > .th {
+	display: table-cell;
+	white-space: normal;
+	height: auto;
+	text-align: left;
 	vertical-align: top;
+	overflow-wrap: anywhere;
+	/* kucat pads cells 1rem/1.25rem content-box — ten columns of that push a
+	   fixed-layout table past its container and force a horizontal scroll */
+	box-sizing: border-box;
+	padding: .45rem .55rem !important;
+}
+
+/* The em-based column widths below resolve against the header cell's own
+   font-size — and kucat scales the whole table with its user-tunable
+   --font-x, inflating every em column until the fixed-layout table exceeds
+   its container. Pinning the header font makes em widths stable on every
+   theme. */
+[data-page^="admin-network-table_firewall"] .tf-table th,
+[data-page^="admin-network-table_firewall"] .tf-table .tr > .th {
+	font-size: .85rem;
+	line-height: 1.35;
 }
 
 [data-page^="admin-network-table_firewall"] .tf-col-pos { width: var(--tf-w-pos, 2.6em); }
@@ -460,11 +488,14 @@
 	flex-basis: 100%;
 	box-sizing: border-box;
 	margin-top: .45rem;
-	margin-bottom: -.35rem;
 	user-select: none;
 	font-size: 85%;
-	line-height: 1.4;
-	overflow: hidden;
+	line-height: 1.6;
+	/* clip horizontally only: overflow:hidden would force overflow-y to
+	   auto and shave off the labels' descenders wherever a theme's
+	   line-height or font metrics run taller than designed */
+	overflow-x: clip;
+	overflow-y: visible;
 }
 
 /* The theme pads table cells `10px 10px 9px`, so the label starts at the same
@@ -491,7 +522,11 @@
 [data-page^="admin-network-table_firewall"] .tf-rs-label {
 	flex: 0 1 auto;
 	white-space: nowrap;
-	overflow: hidden;
+	/* `hidden` forces overflow-y to auto and shaves descenders wherever a
+	   theme's font metrics run taller than the line box (kucat's Google
+	   Sans does); clip horizontally only */
+	overflow-x: clip;
+	overflow-y: visible;
 	text-overflow: ellipsis;
 	opacity: .85;
 	font-weight: bold;
@@ -575,7 +610,7 @@ body.tf-resizing, body.tf-resizing * { cursor: col-resize !important; }
 
 /* --- row actions menu ----------------------------------------------------- */
 
-[data-page^="admin-network-table_firewall"] .tf-c-actions { width: 2.4em; text-align: center; }
+[data-page^="admin-network-table_firewall"] .tf-table .tf-c-actions { width: 2.9em; text-align: center; white-space: nowrap; }
 
 [data-page^="admin-network-table_firewall"] .tf-menu-btn {
 	border: 1px solid transparent;
@@ -585,7 +620,10 @@ body.tf-resizing, body.tf-resizing * { cursor: col-resize !important; }
 	border-radius: 3px;
 	padding: 0 .35em;
 	line-height: 1.4;
-	font-size: 115%;
+	/* absolute size: 115% of the cell font overflows the narrow last column
+	   on themes that scale the table font (kucat's --font-x) */
+	font-size: .95rem;
+	max-width: 100%;
 	opacity: .65;
 }
 
@@ -607,6 +645,9 @@ body.tf-resizing, body.tf-resizing * { cursor: col-resize !important; }
 	box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
 	display: flex;
 	flex-direction: column;
+	/* paired with the surface above: on a dark theme the inherited body
+	   colour would put light text on the light fallback background */
+	color: var(--text-color-high, #222);
 }
 
 .tf-menu .tf-menu-item {
@@ -816,4 +857,126 @@ body.tf-resizing, body.tf-resizing * { cursor: col-resize !important; }
 [data-page^="admin-network-table_firewall"] .tf-fam[aria-pressed="true"] {
 	opacity: 1;
 	text-decoration: none;
+}
+
+/* ==========================================================================
+ * Theme resilience
+ *
+ * luci-base's --background-color-* / --text-color-* variables are used
+ * wherever a theme defines them; every use also states a fallback because
+ * themes like kucat and glass use their own variable names and leave the
+ * standard ones unset. The fallback pairs (light surface + dark ink) are
+ * chosen to stay readable over any page backdrop.
+ * ========================================================================== */
+
+/* Themes like kucat paint every <button> and .cbi-button with their menu
+   colours and !important metrics, and glass gives them a translucent
+   surface. Neither survives inside our toolbar, so the toolbar's buttons
+   get explicit surface + ink pairs. */
+[data-page^="admin-network-table_firewall"] .tf-header .cbi-button:not(.tf-nav) {
+	background: var(--background-color-high, #e8e8e8) !important;
+	background-image: none;
+	border: 1px solid var(--border-color-medium, #999) !important;
+	box-shadow: none;
+	text-shadow: none;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+	color: var(--text-color-high, #222) !important;
+	font-weight: normal;
+	text-transform: none;
+	min-height: 0 !important;
+	line-height: 1.5 !important;
+	width: auto !important;
+	padding: .35rem .7rem;
+	border-radius: 4px;
+	opacity: 1;
+}
+
+/* the coloured calls to action keep a fill — built from the theme's own
+   primary vars where it defines them, a readable blue where it does not */
+[data-page^="admin-network-table_firewall"] .tf-header .cbi-button-action:not(.tf-nav),
+[data-page^="admin-network-table_firewall"] .tf-header .cbi-button-add:not(.tf-nav) {
+	background: linear-gradient(var(--primary-color-medium, #0069d9),
+	                            var(--primary-color-low, #0053ad)) !important;
+	border-color: var(--primary-color-high, #0a84ff) !important;
+	color: var(--on-primary-color, #fff) !important;
+	font-weight: bold;
+}
+
+[data-page^="admin-network-table_firewall"] .tf-header .cbi-button:not(.tf-nav):disabled {
+	opacity: .5;
+}
+
+/* some themes give inputs a transparent surface with menu-coloured text —
+   invisible on the toolbar's light surface, so the field gets its own */
+[data-page^="admin-network-table_firewall"] input.tf-search {
+	background: var(--background-color-high, #fff);
+	border: 1px solid var(--border-color-medium, #999);
+	border-radius: 4px;
+	box-shadow: none;
+	color: var(--text-color-high, #222);
+	padding: .35rem .6rem;
+}
+
+/* themes that uppercase, oversize or indent every button must not do it to
+   the small controls inside cells and menus — kucat adds margin-left and
+   0.75rem of horizontal padding, which pushed the row-menu button ~8px past
+   the last (2.4em) column and forced a horizontal scrollbar on the table */
+[data-page^="admin-network-table_firewall"] .tf-nav,
+[data-page^="admin-network-table_firewall"] .tf-menu-btn,
+.tf-menu .tf-menu-item {
+	min-height: 0 !important;
+	line-height: 1.4 !important;
+	width: auto !important;
+	text-transform: none;
+	margin: 0;
+}
+
+/* kucat paints a 3-D text-shadow (body { text-shadow: var(--font3d) }) on
+   every glyph — a second offset copy that reads as "text escaping its
+   button" inside our controls. Kill it only on the surfaces we paint
+   ourselves; the description text that sits directly on the theme's
+   backdrop still needs its shadow for legibility. */
+[data-page^="admin-network-table_firewall"] .tf-header *,
+[data-page^="admin-network-table_firewall"] .tf-table *,
+[data-page^="admin-network-table_firewall"] .tf-group-head *,
+.tf-menu * {
+	text-shadow: none;
+}
+
+/* a translucent header surface over a dark photo would read white-on-white;
+   state the ink colour next to every surface we paint */
+[data-page^="admin-network-table_firewall"] .tf-header {
+	color: var(--text-color-high, #222);
+	/* kucat zeroes the vertical padding of every div under #view>div via an
+	   id selector (#view>div>div:not(.cbi-button){padding:0 2%}). Without the
+	   bar's own .6rem of breathing room the resize strip's negative bottom
+	   margin pushes its labels clean out of the card. */
+	padding: .6rem .8rem !important;
+}
+
+/* the column guide strip inherits the theme's body font size, which kucat
+   lets users crank up — keep it compact at any base size */
+[data-page^="admin-network-table_firewall"] .tf-resize {
+	font-size: .78rem;
+}
+
+/* the same kucat rule (#view>div>div{...padding:0 2%}) also indents the
+   group tables ~21px while the toolbar card spans edge to edge — level them */
+[data-page^="admin-network-table_firewall"] .cbi-map > .tf-groups,
+[data-page^="admin-network-table_firewall"] .cbi-map > .cbi-map-descr {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+/* themes that switch .table to display:block (glass does inside a media
+   query) break table-layout:fixed entirely — pin it back */
+[data-page^="admin-network-table_firewall"] table.tf-table {
+	display: table;
+}
+
+/* the theme's own submenu pills can end up light-on-light on our page */
+[data-page^="admin-network-table_firewall"] .cbi-tabmenu > li:not(.cbi-tab) a,
+[data-page^="admin-network-table_firewall"] .tabs > li:not(.active) a {
+	color: var(--text-color-high, #222);
 }

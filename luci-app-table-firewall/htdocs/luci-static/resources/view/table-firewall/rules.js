@@ -1554,11 +1554,30 @@ return view.extend({
 	},
 
 	syncStickyOffsets() {
-		const nav = document.querySelector('header');
 		const bar = this.headerEl;
 		const root = document.documentElement;
 
-		const navH = nav ? Math.round(nav.getBoundingClientRect().height) : 0;
+		/* sticky offsets are relative to the scroll container, not the
+		   viewport — kucat scrolls inside .main-right, not the window */
+		let scroller = bar.parentElement;
+		while (scroller && scroller !== document.body) {
+			const oy = getComputedStyle(scroller).overflowY;
+			if (oy === 'auto' || oy === 'scroll') break;
+			scroller = scroller.parentElement;
+		}
+		if (scroller === document.body || !scroller) scroller = null;
+		const scTop = scroller ? scroller.getBoundingClientRect().top : 0;
+
+		/* pick the header that sits at the top of our scroll container:
+		   a theme may have several (kucat also pins a bar-primary to the
+		   bottom of the page), and fixed headers can sit anywhere */
+		let navH = 0;
+		for (const h of document.querySelectorAll('header')) {
+			const r = h.getBoundingClientRect();
+			if (r.top <= scTop + 160 && r.bottom > scTop)
+				navH = Math.max(navH, Math.round(r.bottom - scTop));
+		}
+		navH = Math.min(navH, 200);
 		const barH = bar ? Math.round(bar.getBoundingClientRect().height) : 0;
 
 		/* Writing 0px would override the stylesheet's fallback and drop the bar
