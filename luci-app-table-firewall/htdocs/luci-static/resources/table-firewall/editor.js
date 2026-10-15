@@ -131,7 +131,13 @@ return baseclass.extend({
 		/* --- time --- */
 
 		o = s.taboption('time', form.MultiValue, 'weekdays', _('Week days'));
-		for (const d of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']) o.value(d, d);
+		o.value('Mon', _('Monday'));
+		o.value('Tue', _('Tuesday'));
+		o.value('Wed', _('Wednesday'));
+		o.value('Thu', _('Thursday'));
+		o.value('Fri', _('Friday'));
+		o.value('Sat', _('Saturday'));
+		o.value('Sun', _('Sunday'));
 
 		o = s.taboption('time', form.Value, 'start_time', _('Start time (hh:mm:ss)'));
 		o.datatype = 'timehhmmss';

@@ -1,0 +1,882 @@
+# Simplified Chinese translations for luci-app-table-firewall.
+# Copyright (C) 2026 Gerhard Mautendorfer (MaidByC)
+# This file is distributed under the same license as the
+# luci-app-table-firewall package (Apache-2.0).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: luci-app-table-firewall 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 12:00+0800\n"
+"PO-Revision-Date: 2026-10-15 12:00+0800\n"
+"Last-Translator: MaidByC <dev@maidbyc.com>\n"
+"Language-Team: \n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:36
+#: htdocs/luci-static/resources/table-firewall/editor.js:183
+msgid "DNAT (Port Forward)"
+msgstr "DNAT（端口转发）"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:37
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1453
+msgid "SNAT"
+msgstr "SNAT"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:38
+msgid "MASQUERADE"
+msgstr "MASQUERADE"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:39
+msgid "REDIRECT"
+msgstr "REDIRECT"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:44
+msgid "On"
+msgstr "启用"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:45
+msgid "IPv"
+msgstr "IPv"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:46
+#: htdocs/luci-static/resources/table-firewall/editor.js:64
+#: htdocs/luci-static/resources/table-firewall/editor.js:176
+#: htdocs/luci-static/resources/table-firewall/editor.js:229
+msgid "Name"
+msgstr "名称"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:48
+#: htdocs/luci-static/resources/table-firewall/editor.js:77
+#: htdocs/luci-static/resources/table-firewall/editor.js:187
+msgid "Source zone"
+msgstr "源区域"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:49
+msgid "Source IP"
+msgstr "源 IP"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:50
+#: htdocs/luci-static/resources/table-firewall/editor.js:84
+#: htdocs/luci-static/resources/table-firewall/editor.js:198
+msgid "Destination zone"
+msgstr "目标区域"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:51
+msgid "Dest IP"
+msgstr "目标 IP"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:56
+#: htdocs/luci-static/resources/table-firewall/editor.js:91
+#: htdocs/luci-static/resources/table-firewall/editor.js:190
+#: htdocs/luci-static/resources/table-firewall/editor.js:258
+msgid "Protocol"
+msgstr "协议"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:57
+msgid "Service (Dest port)"
+msgstr "服务（目标端口）"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:58
+#: htdocs/luci-static/resources/table-firewall/editor.js:103
+#: htdocs/luci-static/resources/table-firewall/editor.js:182
+#: htdocs/luci-static/resources/table-firewall/editor.js:235
+msgid "Action"
+msgstr "动作"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:59
+#: htdocs/luci-static/resources/table-firewall/editor.js:110
+#: htdocs/luci-static/resources/table-firewall/editor.js:260
+msgid "Source port"
+msgstr "源端口"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:60
+msgid "Time"
+msgstr "时间"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:61
+#: htdocs/luci-static/resources/table-firewall/editor.js:123
+msgid "Limit"
+msgstr "限制"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:62
+msgid "Log"
+msgstr "日志"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:63
+#: htdocs/luci-static/resources/table-firewall/editor.js:23
+msgid "Mark"
+msgstr "标记"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:64
+msgid "DSCP"
+msgstr "DSCP"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:65
+#: htdocs/luci-static/resources/table-firewall/editor.js:120
+msgid "Helper"
+msgstr "Helper"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:66
+msgid "IPSet"
+msgstr "IP 集"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:67
+msgid "Device"
+msgstr "设备"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:68
+msgid "Extra"
+msgstr "额外"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:69
+msgid "Chain"
+msgstr "链"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:70
+msgid "Section ID"
+msgstr "配置节 ID"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:271
+#, javascript-format
+msgid "Drag to resize “%s”. Double-click to reset. Arrow keys also work."
+msgstr "拖动调整“%s”列宽。双击重置，方向键同样可用。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:287
+msgid "Column widths"
+msgstr "列宽"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:411
+#, javascript-format
+msgid "%d unsaved change(s)"
+msgstr "%d 个未保存的更改"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:412
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:498
+msgid "No pending changes"
+msgstr "无待处理的更改"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:469
+msgid "Search host, IP, port, service, zone or name — highlights, never hides"
+msgstr "搜索主机、IP、端口、服务、区域或名称——只高亮，绝不隐藏"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:485
+msgid "Jump to the previous match"
+msgstr "跳到上一个匹配"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:489
+msgid "Jump to the next match"
+msgstr "跳到下一个匹配"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:495
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:586
+msgid "Columns"
+msgstr "列"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:501
+msgid "Revert"
+msgstr "回退"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:508
+msgid "Save & Apply"
+msgstr "保存并应用"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:519
+#, javascript-format
+msgid "Show or hide IPv%d rules. At least one family stays on."
+msgstr "显示或隐藏 IPv%d 规则。至少保留一个地址族。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:542
+msgid "Add a rule, port forward or NAT rule"
+msgstr "添加规则、端口转发或 NAT 规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:544
+msgid "Add"
+msgstr "添加"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:582
+msgid "default"
+msgstr "默认"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:587
+msgid "Hiding a column never hides that a rule has extra match criteria — any rule with values in hidden columns is marked in its row."
+msgstr "隐藏列不会掩盖规则仍带额外匹配条件这一事实——凡在已隐藏列中有值的规则，都会在其行内被标记。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:593
+msgid "Reset widths"
+msgstr "重置列宽"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:594
+msgid "Close"
+msgstr "关闭"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:614
+msgid "Traffic rule"
+msgstr "通信规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:615
+msgid "Port forward (DNAT)"
+msgstr "端口转发（DNAT）"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:616
+msgid "NAT rule (SNAT / MASQUERADE)"
+msgstr "NAT 规则（SNAT / MASQUERADE）"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:739
+msgid "Move a wildcard rule"
+msgstr "移动通配规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:740
+#, javascript-format
+msgid "“%s” uses a wildcard zone and is shown in several groups."
+msgstr "“%s”使用了通配区域，因此显示在多个分组中。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:741
+msgid "Moving it here changes its position in all of them, because they are the same rule."
+msgstr "在这里移动它会改变它在所有这些分组中的位置，因为它们是同一条规则。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:742
+msgid "Using “any zone” is not recommended for this reason — a wildcard rule pre-empts rules across every zone pair it spans. Naming the zone explicitly keeps the evaluation order readable."
+msgstr "因此不建议使用“任意区域”——通配规则会在其横跨的每一个区域对中抢占规则。显式指定区域名可让评估顺序保持清晰可读。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:744
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:855
+#: htdocs/luci-static/resources/table-firewall/editor.js:300
+msgid "Cancel"
+msgstr "取消"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:748
+msgid "Move it"
+msgstr "移动"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:760
+msgid "Could not move the rule."
+msgstr "无法移动该规则。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:782
+msgid "Edit…"
+msgstr "编辑…"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:783
+msgid "Duplicate…"
+msgstr "复制…"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:784
+msgid "Delete…"
+msgstr "删除…"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:827
+#, javascript-format
+msgid "%s (copy)"
+msgstr "%s（副本）"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:827
+msgid "rule"
+msgstr "规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:846
+msgid "Delete rule"
+msgstr "删除规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:847
+#, javascript-format
+msgid "Delete “%s”?"
+msgstr "删除“%s”？"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:850
+msgid "This rule uses a wildcard zone, so it is shown in several groups. Deleting it removes it from all of them."
+msgstr "该规则使用了通配区域，因此显示在多个分组中。删除它会将其从所有分组中移除。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:853
+msgid "The change is staged — nothing is applied until you press Save & Apply."
+msgstr "更改已暂存——按下“保存并应用”之前不会生效。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:863
+msgid "Delete"
+msgstr "删除"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:905
+msgid "Not constrained to a zone; only the source address narrows it."
+msgstr "不限定于某个区域；仅由源地址收窄范围。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:906
+msgid "Matches every zone. Not recommended: such a rule is evaluated against traffic in every zone pair it spans and can pre-empt rules further down. Naming the zone keeps the evaluation order readable."
+msgstr "匹配所有区域。不建议：该规则会在其横跨的每一个区域对中参与评估，并可能抢占排在其后的规则。指定区域名可让评估顺序保持清晰可读。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:907
+msgid "any zone"
+msgstr "任意区域"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:908
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1030
+msgid "this device"
+msgstr "本设备"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:918
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:941
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1042
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1048
+#: htdocs/luci-static/resources/table-firewall/editor.js:82
+#: htdocs/luci-static/resources/table-firewall/editor.js:89
+#: htdocs/luci-static/resources/table-firewall/editor.js:92
+#: htdocs/luci-static/resources/table-firewall/editor.js:101
+#: htdocs/luci-static/resources/table-firewall/editor.js:112
+#: htdocs/luci-static/resources/table-firewall/editor.js:259
+msgid "any"
+msgstr "任意"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:995
+msgid "declared"
+msgstr "显式声明"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:996
+msgid "dual-stack"
+msgstr "双栈"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:997
+msgid "ICMP type"
+msgstr "ICMP 类型"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:999
+#, javascript-format
+msgid "zone %s"
+msgstr "区域 %s"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1000
+#, javascript-format
+msgid "protocol %s"
+msgstr "协议 %s"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1002
+msgid "src ip"
+msgstr "源 IP"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1002
+msgid "dest ip"
+msgstr "目标 IP"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1016
+#, javascript-format
+msgid "Applies to IPv%d (%s)"
+msgstr "适用于 IPv%d（%s）"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1017
+#, javascript-format
+msgid "Does not apply to IPv%d"
+msgstr "不适用于 IPv%d"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1038
+msgid "interface address"
+msgstr "接口地址"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1070
+#, javascript-format
+msgid "Also known as: %s"
+msgstr "亦称为：%s"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1105
+msgid "Drag to reorder within this group"
+msgstr "拖拽以在本组内调整顺序"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1123
+msgid "Shown here because it uses a wildcard zone, so it applies across zone pairs. Editing, moving or deleting it here affects every group it appears in. Using “any zone” is not recommended: a wildcard rule can pre-empt rules further down that look unrelated to it — naming the zone keeps the evaluation order readable."
+msgstr "显示在此处是因为它使用了通配区域，会跨多个区域对生效。在此编辑、移动或删除它会影响其出现的所有分组。不建议使用“任意区域”：通配规则可能抢占其下方看似无关的规则——指定区域名可让评估顺序保持清晰可读。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1134
+#, javascript-format
+msgid "Never matches: %s earlier in %s already matches this traffic."
+msgstr "永不匹配：%s 在 %s 中排序靠前，已匹配此流量。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1142
+msgid "This rule has unsaved changes. Save & Apply to keep them, Revert to discard."
+msgstr "该规则有未保存的更改。“保存并应用”予以保留，“回退”予以丢弃。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1148
+#, javascript-format
+msgid "%d further match criteria not shown: %s"
+msgstr "另有 %d 个未显示的匹配条件：%s"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1156
+msgid "Rule actions"
+msgstr "规则操作"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1169
+msgid "Double-click to edit"
+msgstr "双击编辑"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1196
+#: htdocs/luci-static/resources/table-firewall/editor.js:68
+#: htdocs/luci-static/resources/table-firewall/editor.js:179
+#: htdocs/luci-static/resources/table-firewall/editor.js:232
+msgid "Enabled"
+msgstr "启用"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1196
+msgid "Disabled"
+msgstr "已禁用"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1228
+msgid "no rules"
+msgstr "无规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1271
+msgid "Port forwards arriving here — prerouting, before the rules below"
+msgstr "到达此处的端口转发——prerouting 阶段，先于下方的规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1274
+#, javascript-format
+msgid "· positions are within that chain, which holds %d in total"
+msgstr "· 编号为该链内的位置，该链共 %d 条"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1294
+msgid "Also matching this pair on other netfilter hooks (mangle / raw). These do not participate in the ordering above."
+msgstr "在其他 netfilter hook（mangle / raw）上同样匹配此区域对的规则，不参与上述排序。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1306
+#, javascript-format
+msgid "Port-forwarded traffic into %s is accepted before these policies (ct status dnat accept)."
+msgstr "进入 %s 的端口转发流量先于这些策略被接受（ct status dnat accept）。"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1333
+#, javascript-format
+msgid "Leaving via %s"
+msgstr "经由 %s 离开"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1335
+#, javascript-format
+msgid "%d NAT rules"
+msgstr "%d 条 NAT 规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1335
+msgid "no NAT rules"
+msgstr "无 NAT 规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1339
+msgid "masquerade"
+msgstr "地址伪装"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1340
+#, javascript-format
+msgid "masquerade (IPv%d)"
+msgstr "地址伪装（IPv%d）"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1342
+msgid "shared by every pair ending here"
+msgstr "由所有以此为目的的区域对共用"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1369
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1398
+#, javascript-format
+msgid "Anything not matched above: %s%s — %s"
+msgstr "以上均未匹配的流量：%s%s —— %s"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1371
+msgid "no translation"
+msgstr "不做地址转换"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1385
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1486
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1529
+#, javascript-format
+msgid "%d rules"
+msgstr "%d 条规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1387
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1540
+#, javascript-format
+msgid "%d matches"
+msgstr "%d 处匹配"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1445
+msgid "Click to fold or unfold this zone"
+msgstr "点击折叠或展开此区域"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1449
+msgid "as source"
+msgstr "作为源"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1451
+msgid "rules"
+msgstr "条规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1452
+msgid "DNAT"
+msgstr "DNAT"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1454
+msgid "mangle"
+msgstr "mangle"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1455
+msgid "disabled"
+msgstr "条已禁用"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1457
+msgid "unfolded: matches"
+msgstr "已展开：有匹配"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1485
+msgid "Not shown in any zone pair"
+msgstr "未归入任何区域对"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1534
+msgid "no matches"
+msgstr "无匹配"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1539
+#, javascript-format
+msgid "%d / %d matches"
+msgstr "%d / %d 处匹配"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1653
+#: root/usr/share/luci/menu.d/luci-app-table-firewall.json:14
+msgid "Traffic Rules"
+msgstr "通信规则"
+
+#: htdocs/luci-static/resources/view/table-firewall/rules.js:1655
+msgid "Grouped by zone pair, in real evaluation order. Double-click a rule to edit it. Search highlights matches and never hides rules — what sits above a rule determines whether it fires at all."
+msgstr "按区域对分组，以真实评估顺序排列。双击规则即可编辑。搜索只高亮匹配项，绝不隐藏规则——规则能否命中，取决于排在它上方的是什么。"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:20
+msgid "Accept"
+msgstr "接受"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:21
+msgid "Reject"
+msgstr "拒绝"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:22
+msgid "Drop"
+msgstr "丢弃"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:24
+msgid "Do not track"
+msgstr "不跟踪"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:25
+msgid "Assign helper"
+msgstr "分配 helper"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:45
+#: htdocs/luci-static/resources/table-firewall/editor.js:172
+#: htdocs/luci-static/resources/table-firewall/editor.js:225
+msgid "General"
+msgstr "常规"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:46
+#: htdocs/luci-static/resources/table-firewall/editor.js:173
+#: htdocs/luci-static/resources/table-firewall/editor.js:226
+msgid "Advanced"
+msgstr "高级"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:47
+msgid "Time restrictions"
+msgstr "时间限制"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:53
+msgid "Not recommended: a wildcard end matches every zone, so this rule is evaluated against traffic it may look unrelated to and can pre-empt rules further down the chain. Naming the zone keeps the evaluation order readable."
+msgstr "不推荐：通配端会匹配所有区域，因此该规则会对看似无关的流量参与评估，并可能抢占链中更靠后的规则。指定区域名可让评估顺序保持清晰可读。"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:56
+#: htdocs/luci-static/resources/table-firewall/editor.js:160
+msgid "this device (input)"
+msgstr "本设备（入站）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:56
+#: htdocs/luci-static/resources/table-firewall/editor.js:160
+msgid "this device (output)"
+msgstr "本设备（出站）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:57
+#: htdocs/luci-static/resources/table-firewall/editor.js:161
+msgid "any zone — not recommended"
+msgstr "任意区域——不推荐"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:66
+msgid "Describe what this rule does"
+msgstr "描述该规则的作用"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:72
+msgid "Address family"
+msgstr "地址族"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:73
+msgid "IPv4 and IPv6"
+msgstr "IPv4 和 IPv6"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:74
+msgid "IPv4 only"
+msgstr "仅 IPv4"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:75
+msgid "IPv6 only"
+msgstr "仅 IPv6"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:80
+#: htdocs/luci-static/resources/table-firewall/editor.js:209
+#: htdocs/luci-static/resources/table-firewall/editor.js:253
+msgid "Source address"
+msgstr "源地址"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:87
+#: htdocs/luci-static/resources/table-firewall/editor.js:255
+msgid "Destination address"
+msgstr "目标地址"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:99
+#: htdocs/luci-static/resources/table-firewall/editor.js:262
+msgid "Destination port"
+msgstr "目标端口"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:114
+#: htdocs/luci-static/resources/table-firewall/editor.js:211
+msgid "Source MAC"
+msgstr "源 MAC"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:117
+msgid "Set mark"
+msgstr "设置标记"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:126
+msgid "Log matched packets"
+msgstr "记录匹配的数据包"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:128
+#: htdocs/luci-static/resources/table-firewall/editor.js:213
+#: htdocs/luci-static/resources/table-firewall/editor.js:264
+msgid "Extra arguments"
+msgstr "额外参数"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:129
+msgid "passed to fw4 verbatim"
+msgstr "原样传递给 fw4"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:133
+msgid "Week days"
+msgstr "星期"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:134
+msgid "Monday"
+msgstr "星期一"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:135
+msgid "Tuesday"
+msgstr "星期二"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:136
+msgid "Wednesday"
+msgstr "星期三"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:137
+msgid "Thursday"
+msgstr "星期四"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:138
+msgid "Friday"
+msgstr "星期五"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:139
+msgid "Saturday"
+msgstr "星期六"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:140
+msgid "Sunday"
+msgstr "星期日"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:142
+msgid "Start time (hh:mm:ss)"
+msgstr "开始时间（hh:mm:ss）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:145
+msgid "Stop time (hh:mm:ss)"
+msgstr "结束时间（hh:mm:ss）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:148
+msgid "Start date (yyyy-mm-dd)"
+msgstr "开始日期（yyyy-mm-dd）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:151
+msgid "Stop date (yyyy-mm-dd)"
+msgstr "结束日期（yyyy-mm-dd）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:154
+msgid "Times are UTC"
+msgstr "时间为 UTC"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:184
+msgid "SNAT (legacy on this section type)"
+msgstr "SNAT（在此配置节类型中为旧式用法）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:194
+msgid "External port"
+msgstr "外部端口"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:196
+msgid "The port the client connects to."
+msgstr "客户端连接的端口。"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:201
+msgid "Internal address"
+msgstr "内部地址"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:203
+msgid "Where the traffic is sent. Leave empty to redirect to this device."
+msgstr "流量被送达的地址。留空表示重定向到本设备。"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:205
+msgid "Internal port"
+msgstr "内部端口"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:207
+msgid "Leave empty to keep the external port."
+msgstr "留空则沿用外部端口。"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:236
+msgid "MASQUERADE — rewrite to the outgoing interface address"
+msgstr "MASQUERADE——改写为出接口地址"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:237
+msgid "SNAT — rewrite to a fixed address"
+msgstr "SNAT——改写为固定地址"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:238
+msgid "ACCEPT — no translation"
+msgstr "ACCEPT——不做地址转换"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:241
+msgid "Outbound zone"
+msgstr "出站区域"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:243
+msgid "The zone the traffic leaves through. NAT rules are evaluated in this zone's srcnat chain."
+msgstr "流量离开所经过的区域。NAT 规则在该区域的 srcnat 链中评估。"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:245
+msgid "Rewrite to address"
+msgstr "改写为地址"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:249
+msgid "Rewrite to port"
+msgstr "改写为端口"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:292
+msgid "Add traffic rule"
+msgstr "添加通信规则"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:292
+msgid "Edit traffic rule"
+msgstr "编辑通信规则"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:293
+msgid "Add port forward (DNAT)"
+msgstr "添加端口转发（DNAT）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:293
+msgid "Edit port forward (DNAT)"
+msgstr "编辑端口转发（DNAT）"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:294
+msgid "Add NAT rule"
+msgstr "添加 NAT 规则"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:294
+msgid "Edit NAT rule"
+msgstr "编辑 NAT 规则"
+
+#: htdocs/luci-static/resources/table-firewall/editor.js:304
+msgid "Save"
+msgstr "保存"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:630
+#, javascript-format
+msgid "zone %s input policy"
+msgstr "区域 %s 的 input 策略"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:630
+msgid "firewall default input policy"
+msgstr "防火墙默认 input 策略"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:638
+#, javascript-format
+msgid "zone %s output policy"
+msgstr "区域 %s 的 output 策略"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:638
+msgid "firewall default output policy"
+msgstr "防火墙默认 output 策略"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:651
+#, javascript-format
+msgid "zone %s forward policy — this governs traffic staying inside %s only"
+msgstr "区域 %s 的 forward 策略——仅管辖 %s 内部的流量"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:659
+#, javascript-format
+msgid "zone forwarding %s → %s"
+msgstr "区域转发 %s → %s"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:671
+#, javascript-format
+msgid "no forwarding %s → %s — falls through to the default forward policy (REJECT, via handle_reject)"
+msgstr "无 %s → %s 的转发规则——落入默认 forward 策略（REJECT，经由 handle_reject）"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:673
+#, javascript-format
+msgid "no forwarding %s → %s — falls through to the default forward policy (%s)"
+msgstr "无 %s → %s 的转发规则——落入默认 forward 策略（%s）"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:775
+#, javascript-format
+msgid " (only %s)"
+msgstr "（仅限 %s）"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:777
+#, javascript-format
+msgid "from %s"
+msgstr "来自 %s"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:778
+#, javascript-format
+msgid "to %s"
+msgstr "至 %s"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:783
+#, javascript-format
+msgid "zone %s masquerades remaining IPv%d traffic%s"
+msgstr "区域 %s 对其余 IPv%d 流量做地址伪装%s"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:789
+msgid "no source NAT — the address is left unchanged"
+msgstr "无源 NAT——地址保持不变"
+
+#: htdocs/luci-static/resources/table-firewall/model.js:795
+msgid "no destination NAT — the packet is not redirected"
+msgstr "无目的 NAT——数据包不会被重定向"
+
+#: htdocs/luci-static/resources/table-firewall/search.js:25
+msgid "zone"
+msgstr "区域"
+
+#: htdocs/luci-static/resources/table-firewall/search.js:36
+msgid "action"
+msgstr "动作"
+
+#: htdocs/luci-static/resources/table-firewall/search.js:39
+msgid "protocol"
+msgstr "协议"
+
+#: root/usr/share/luci/menu.d/luci-app-table-firewall.json:3
+msgid "Table Firewall"
+msgstr "表格防火墙"
+
+#: root/usr/share/luci/menu.d/luci-app-table-firewall.json:23
+msgid "General Settings"
+msgstr "常规设置"
+
+#: root/usr/share/luci/menu.d/luci-app-table-firewall.json:36
+msgid "IP Sets"
+msgstr "IP 集"

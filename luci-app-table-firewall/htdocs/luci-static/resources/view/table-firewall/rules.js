@@ -824,7 +824,7 @@ return view.extend({
 			if (k.charAt(0) === '.') continue;
 			copy[k] = src[k];
 		}
-		copy.name = (rule.name || _('rule')) + ' ' + _('(copy)');
+		copy.name = _('%s (copy)').format(rule.name || _('rule'));
 
 		/* Clone the *same section type*: duplicating a port forward has to
 		   produce another config redirect, not a config rule. Getting this
@@ -987,6 +987,22 @@ return view.extend({
 		return E('span', {}, '');
 	},
 
+	/* `familyBy` arrives from the model as an English phrase ("zone lan",
+	   "src ip"). It is a fact about the rule, not model-owned UI text, so it
+	   is mapped to a translatable form here, at the point of display. */
+	familyByText(by) {
+		const s = String(by || '');
+		if (s === 'declared')   return _('declared');
+		if (s === 'dual-stack') return _('dual-stack');
+		if (s === 'ICMP type')  return _('ICMP type');
+		let m;
+		if ((m = /^zone (.+)$/.exec(s)))     return _('zone %s').format(m[1]);
+		if ((m = /^protocol (.+)$/.exec(s))) return _('protocol %s').format(m[1]);
+		if ((m = /^(src|dest) ip$/.exec(s)))
+			return m[1] === 'src' ? _('src ip') : _('dest ip');
+		return s;
+	},
+
 	/* Two fixed slots: IPv4 always left, IPv6 always right. A dual-stack rule
 	   fills both; a pinned rule leaves the other slot empty but still
 	   occupied, so position alone tells you the family down a long column. */
@@ -997,7 +1013,7 @@ return view.extend({
 			return E('span', {
 				class: 'tf-ipv tf-ipv' + fam + (on ? '' : ' tf-ipv-off'),
 				title: on
-					? _('Applies to IPv%d (%s)').format(fam, rule.familyBy)
+					? _('Applies to IPv%d (%s)').format(fam, this.familyByText(rule.familyBy))
 					: _('Does not apply to IPv%d').format(fam)
 			}, 'v' + fam);
 		};
